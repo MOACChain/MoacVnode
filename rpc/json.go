@@ -1,18 +1,18 @@
-// Copyright 2015 The go-ethereum Authors
-// This file is part of the go-ethereum library.
+// Copyright 2015 The MOAC-core Authors
+// This file is part of the MOAC-core library.
 //
-// The go-ethereum library is free software: you can redistribute it and/or modify
+// The MOAC-core library is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// The go-ethereum library is distributed in the hope that it will be useful,
+// The MOAC-core library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
+// along with the MOAC-core library. If not, see <http://www.gnu.org/licenses/>.
 
 package rpc
 
@@ -161,29 +161,6 @@ func parseRequest(incomingMsg json.RawMessage) ([]rpcRequest, bool, Error) {
 		return nil, false, &invalidMessageError{err.Error()}
 	}
 
-	// subscribe are special, they will always use `subscribeMethod` as first param in the payload
-	if strings.HasSuffix(in.Method, subscribeMethodSuffix) {
-		reqs := []rpcRequest{{id: &in.Id, isPubSub: true}}
-		if len(in.Payload) > 0 {
-			// first param must be subscription name
-			var subscribeMethod [1]string
-			if err := json.Unmarshal(in.Payload, &subscribeMethod); err != nil {
-				log.Debug(fmt.Sprintf("Unable to parse subscription method: %v\n", err))
-				return nil, false, &invalidRequestError{"Unable to parse subscription request"}
-			}
-
-			reqs[0].service, reqs[0].method = strings.TrimSuffix(in.Method, subscribeMethodSuffix), subscribeMethod[0]
-			reqs[0].params = in.Payload
-			return reqs, false, nil
-		}
-		return nil, false, &invalidRequestError{"Unable to parse subscription request"}
-	}
-
-	if strings.HasSuffix(in.Method, unsubscribeMethodSuffix) {
-		return []rpcRequest{{id: &in.Id, isPubSub: true,
-			method: in.Method, params: in.Payload}}, false, nil
-	}
-
 	elems := strings.Split(in.Method, serviceMethodSeparator)
 
 	// backward compatibility for client sending eth_xxx rpc requests
@@ -197,6 +174,29 @@ func parseRequest(incomingMsg json.RawMessage) ([]rpcRequest, bool, Error) {
 		// upon receiving web3_xxx requests, call mc service for it as well.
 		log.Debugf("Change web3 to chain3")
 		elems[0] = "chain3"
+	}
+
+	// subscribe are special, they will always use `subscribeMethod` as first param in the payload
+	if strings.HasSuffix(in.Method, subscribeMethodSuffix) {
+		reqs := []rpcRequest{{id: &in.Id, isPubSub: true}}
+		if len(in.Payload) > 0 {
+			// first param must be subscription name
+			var subscribeMethod [1]string
+			if err := json.Unmarshal(in.Payload, &subscribeMethod); err != nil {
+				log.Debug(fmt.Sprintf("Unable to parse subscription method: %v\n", err))
+				return nil, false, &invalidRequestError{"Unable to parse subscription request"}
+			}
+
+			reqs[0].service, reqs[0].method = elems[0], subscribeMethod[0]
+			reqs[0].params = in.Payload
+			return reqs, false, nil
+		}
+		return nil, false, &invalidRequestError{"Unable to parse subscription request"}
+	}
+
+	if strings.HasSuffix(in.Method, unsubscribeMethodSuffix) {
+		return []rpcRequest{{id: &in.Id, isPubSub: true,
+			method: in.Method, params: in.Payload}}, false, nil
 	}
 
 	if len(elems) != 2 {

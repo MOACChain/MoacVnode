@@ -4,6 +4,7 @@ Official golang implementation of the MOAC VNODE client with MOAC POW protocol.
 
 Automated builds are available for stable releases and the unstable master branch.
 Binary archives are published at https://github.com/MOACChain/moac-core/releases/.
+Please refer to published releases for production use.
 
 More information about the MOAC project can be found at [MOAC Documents](https://moac-docs.readthedocs.io/en/latest/).
 

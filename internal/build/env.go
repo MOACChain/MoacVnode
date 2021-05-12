@@ -83,7 +83,7 @@ func Env() Environment {
 // set the git path to moac-vnode
 
 func LocalEnv() Environment {
-	env := applyEnvFlags(Environment{Name: "local", Repo: "innowells/moac-vnode"})
+	env := applyEnvFlags(Environment{Name: "local", Repo: "MOACChain/MoacVnode"})
 	if _, err := os.Stat(".git"); err != nil {
 		return env
 	}

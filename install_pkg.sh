@@ -26,3 +26,4 @@ go get github.com/beevik/ntp
 go get github.com/patrickmn/go-cache
 go get gopkg.in/olebedev/go-duktape.v3
 go get github.com/holiman/uint256
+go get golang.org/x/crypto/openpgp

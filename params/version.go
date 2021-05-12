@@ -31,14 +31,17 @@ import (
 //2021/03/15, fuxi version 2.0.2, release to defuse the difficulty bomb on testnet at block 5042000.
 //2021/03/25, fuxi version 2.0.3, release to defuse the difficulty bomb on mainnet at block height 6462000.
 //2021/04/06, fuxi version 2.0.4, fixe the error when VNODE read block states and improve the stability of VNODE.
-//2021/04/18, fuxi version 2.0.5, enables the web3 RPC commands after block height 5260000 on testnet.
+//2021/04/18, fuxi version 2.0.5, testnet only, enables the web3 RPC commands after block height 5260000 on testnet.
+//2021/04/28, fuxi version 2.0.6, testnet only, added the precompiled contract for BLS12-381 curve operations as suggested on Ethereum EIP-2537. This new feature will enable the operations such as BLS signature verification and perform SNARKs verifications on MOAC network, which are required for future cross-chain operations and building cross-chain AMMs.
+//2021/05/09, fuxi version 2.0.7, testnet only, fixed the issue of parameters in eth_subscribe method. Now the VNODE will support all four parameters in eth_subscribe method:newHeads,logs,newPendingTransactions,syncing.
+//2021/05/12, fuxi version 2.1.0, mainnet upgrade with all updates from fuxi version 2.0.5 - 2.0.7.
 
 const (
-	VersionName  = "fuxi" // Major version name in the Roadmap: Pangu 0.8; Nuwa 1.0; Fuxi 2.0; Shennong 2.0+;
-	VersionMajor = 2      // Major version component of the current release
-	VersionMinor = 0      // Minor version component of the current release
-	VersionPatch = 5      // Patch version component of the current release
-	VersionMeta  = "beta" // Version metadata to append to the version string, rc/stable
+	VersionName  = "fuxi"   // Major version name in the Roadmap: Pangu 0.8; Nuwa 1.0; Fuxi 2.0; Shennong 2.0+;
+	VersionMajor = 2        // Major version component of the current release
+	VersionMinor = 1        // Minor version component of the current release
+	VersionPatch = 0        // Patch version component of the current release
+	VersionMeta  = "stable" // Version metadata to append to the version string, rc/stable
 )
 
 // Version holds the textual version string with Full name.

@@ -32,16 +32,16 @@ import (
 	"github.com/MOACChain/MoacLib/common"
 	"github.com/MOACChain/MoacLib/common/hexutil"
 	"github.com/MOACChain/MoacLib/log"
+	"github.com/MOACChain/MoacLib/params"
 	"github.com/MOACChain/MoacLib/rlp"
-	"github.com/MOACChain/MoacLib/trie"
-	"github.com/MOACChain/MoacVnode/core"
 	"github.com/MOACChain/MoacLib/state"
+	"github.com/MOACChain/MoacLib/trie"
 	"github.com/MOACChain/MoacLib/types"
 	"github.com/MOACChain/MoacLib/vm"
+	"github.com/MOACChain/MoacVnode/core"
 	"github.com/MOACChain/MoacVnode/internal/mcapi"
 	"github.com/MOACChain/MoacVnode/mc/tracers"
 	"github.com/MOACChain/MoacVnode/miner"
-	"github.com/MOACChain/MoacLib/params"
 	"github.com/MOACChain/MoacVnode/rpc"
 )
 
@@ -83,71 +83,6 @@ func (api *PublicMoacAPI) Coinbase() (common.Address, error) {
 func (api *PublicMoacAPI) Hashrate() hexutil.Uint64 {
 	return hexutil.Uint64(api.e.Miner().HashRate())
 }
-
-// InternalTX copy the debug_TraceTransaction and returns the structured
-// logs created during the execution of EVM
-// and returns them as a JSON object.
-// func (api *PublicMoacAPI) InternalTX(ctx context.Context, txHash common.Hash, config *TraceArgs) (interface{}, error) {
-// 	log.Debug("[mc/api.go->TraceTransaction in]")
-// 	var tracer vm.Tracer
-// 	if config != nil && config.Tracer != nil {
-// 		timeout := defaultTraceTimeout
-// 		if config.Timeout != nil {
-// 			var err error
-// 			if timeout, err = time.ParseDuration(*config.Timeout); err != nil {
-// 				return nil, err
-// 			}
-// 		}
-
-// 		var err error
-// 		if tracer, err = mcapi.NewJavascriptTracer(*config.Tracer); err != nil {
-// 			return nil, err
-// 		}
-
-// 		// Handle timeouts and RPC cancellations
-// 		deadlineCtx, cancel := context.WithTimeout(ctx, timeout)
-// 		go func() {
-// 			<-deadlineCtx.Done()
-// 			tracer.(*mcapi.JavascriptTracer).Stop(&timeoutError{})
-// 		}()
-// 		defer cancel()
-// 	} else if config == nil {
-// 		tracer = vm.NewStructLogger(nil)
-// 	} else {
-// 		tracer = vm.NewStructLogger(config.LogConfig)
-// 	}
-
-// 	// Retrieve the tx from the chain and the containing block
-// 	tx, blockHash, _, txIndex := core.GetTransaction(api.mc.ChainDb(), txHash)
-// 	if tx == nil {
-// 		return nil, fmt.Errorf("transaction %x not found", txHash)
-// 	}
-// 	msg, context, statedb, err := api.computeTxEnv(blockHash, int(txIndex))
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	// Run the transaction with tracing enabled.
-// 	nr := api.mc.ProtocolManager.NetworkRelay
-// 	vmenv := vm.NewEVM(context, statedb, api.config, vm.Config{Debug: true, Tracer: tracer}, nr)
-// 	// TODO utilize failed flag
-// 	ret, gas, _, err := core.ApplyMessage(vmenv, msg, new(core.GasPool).AddGas(tx.GasLimit()))
-// 	if err != nil {
-// 		return nil, fmt.Errorf("tracing failed: %v", err)
-// 	}
-// 	switch tracer := tracer.(type) {
-// 	case *vm.StructLogger:
-// 		return &mcapi.ExecutionResult{
-// 			Gas:         gas,
-// 			ReturnValue: fmt.Sprintf("%x", ret),
-// 			StructLogs:  mcapi.FormatLogs(tracer.StructLogs()),
-// 		}, nil
-// 	case *mcapi.JavascriptTracer:
-// 		return tracer.GetResult()
-// 	default:
-// 		panic(fmt.Sprintf("bad tracer type %T", tracer))
-// 	}
-// }
 
 // PublicMinerAPI provides an API to control the miner.
 // It offers only methods that operate on data that pose no security risk when it is publicly accessible.

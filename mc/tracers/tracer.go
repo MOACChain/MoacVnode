@@ -29,8 +29,8 @@ import (
 	"github.com/MOACChain/MoacLib/common/hexutil"
 	"github.com/MOACChain/MoacLib/crypto"
 	"github.com/MOACChain/MoacLib/log"
-	"github.com/MOACChain/MoacVnode/core/contracts"
 	"github.com/MOACChain/MoacLib/vm"
+	"github.com/MOACChain/MoacVnode/core/contracts"
 	duktape "gopkg.in/olebedev/go-duktape.v3"
 )
 
@@ -391,9 +391,10 @@ func New(code string) (*Tracer, error) {
 		copy(makeSlice(ctx.PushFixedBuffer(20), 20), contract[:])
 		return 1
 	})
+	// Update the precompiled contracts to Fuxi instead of Pangu
 	tracer.vm.PushGlobalGoFunction("isPrecompiled", func(ctx *duktape.Context) int {
 		precompiledContracts := contracts.GetInstance()
-		precompiles := precompiledContracts.PrecompiledContractsPangu()
+		precompiles := precompiledContracts.PrecompiledContractsFuxi()
 		_, ok := precompiles[common.BytesToAddress(popSlice(ctx))]
 		ctx.PushBoolean(ok)
 		return 1

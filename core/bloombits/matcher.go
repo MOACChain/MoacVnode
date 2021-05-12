@@ -1,18 +1,18 @@
-// Copyright 2017 The go-ethereum Authors
-// This file is part of the go-ethereum library.
+// Copyright 2017 The MOAC-core Authors
+// This file is part of the MOAC-core library.
 //
-// The go-ethereum library is free software: you can redistribute it and/or modify
+// The MOAC-core library is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// The go-ethereum library is distributed in the hope that it will be useful,
+// The MOAC-core library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
+// along with the MOAC-core library. If not, see <http://www.gnu.org/licenses/>.
 
 package bloombits
 
@@ -173,9 +173,13 @@ func (m *Matcher) Start(begin, end uint64, results chan uint64) (*MatcherSession
 				// Iterate over all the blocks in the section and return the matching ones
 				for i := first; i <= last; i++ {
 					// Skip the entire byte if no matches are found inside
+					// (and we're processing an entire byte!)
 					next := res.bitset[(i-sectionStart)/8]
+					// geth #15871,#15849
 					if next == 0 {
-						i += 7
+						if i%8 == 0 {
+							i += 7
+						}
 						continue
 					}
 					// Some bit it set, do the actual submatching

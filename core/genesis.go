@@ -219,6 +219,10 @@ func SetupGenesisBlock(db mcdb.Database, genesis *Genesis, noCompatCheck bool) (
 		if existingChainConfig.EnableClassicTx == nil {
 			existingChainConfig.EnableClassicTx = params.AllProtocolChanges.EnableClassicTx
 		}
+		if existingChainConfig.EnableFuxiPrecompiled == nil {
+			existingChainConfig.EnableFuxiPrecompiled = params.AllProtocolChanges.EnableFuxiPrecompiled
+		}
+
 		log.Infof("SetupGenesisBlock return 5")
 		return existingChainConfig, existingGenesisHash, nil
 	}
